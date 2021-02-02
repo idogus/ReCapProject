@@ -17,6 +17,9 @@ namespace ConsoleUI
         static void Main(string[] args)
         {
             _carService = InstanceFactory.GetInstance<ICarService>();
+            _colorService = InstanceFactory.GetInstance<IColorService>();
+            _brandService = InstanceFactory.GetInstance<IBrandService>();
+
             WriteTheCars();
 
             Console.WriteLine("============ Seçilen Araç ================");
@@ -29,12 +32,48 @@ namespace ConsoleUI
             WriteCar(addedCar);
             WriteTheCars();
         }
+        private static IEnumerable<CarDTO> GetCarDTOsByLinq()
+        {
+            IEnumerable<CarDTO> resultLinq = from c in _carService.GetAll()
+                                             join b in _brandService.GetAll()
+                                             on c.BrandId equals b.Id
+                                             join cl in _colorService.GetAll()
+                                             on c.ColorId equals cl.Id
+                                             select new CarDTO
+                                             {
+                                                 Brand = b.Name,
+                                                 Color = cl.Name,
+                                                 DailyPrice = c.DailyPrice,
+                                                 Description = c.Description,
+                                                 ModelYear = c.ModelYear
+                                             };
+            return resultLinq;
+        }
+        private static List<CarDTO> GetCarDTOsByLambda()
+        {
+            var resultLambda = _carService.GetAll()
+                .Join(_brandService.GetAll(), c => c.BrandId, b => b.Id, (c, b) => new Car
+                {
+                    Id = c.Id,
+                    Brand = b,
+                    BrandId = c.BrandId,
+                    ColorId = c.ColorId,
+                    DailyPrice = c.DailyPrice,
+                    Description = c.Description,
+                    ModelYear = c.ModelYear
+                }).Join(_colorService.GetAll(), c => c.ColorId, cl => cl.Id, (c, cl) => new CarDTO
+                {
+                    Brand = c.Brand.Name,
+                    Color = cl.Name,
+                    DailyPrice = c.DailyPrice,
+                    ModelYear = c.ModelYear,
+                    Description = c.Description
+                }).ToList();
+            return resultLambda;
+        }
         private static CarDTO GetCarDTO(Car car)
         {
-            _colorService = InstanceFactory.GetInstance<IColorService>();
-            _brandService = InstanceFactory.GetInstance<IBrandService>();
-
-            return new CarDTO
+            var resultDto = new CarDTO
             {
                 Brand = _brandService.GetById(car.BrandId).ToString(),
                 Color = _colorService.GetById(car.ColorId).ToString(),
@@ -42,6 +81,8 @@ namespace ConsoleUI
                 DailyPrice = car.DailyPrice,
                 Description = car.Description
             };
+
+            return resultDto;
         }
 
         private static void WriteTheCars()
