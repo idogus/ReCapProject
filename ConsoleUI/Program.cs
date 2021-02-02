@@ -22,6 +22,20 @@ namespace ConsoleUI
 
             WriteTheCars();
 
+            var resultByLinkedTables = _carService.GetAll().Select(x => new Car
+            {
+                Id = x.Id,
+                BrandId = x.BrandId,
+                ColorId = x.ColorId,
+                Brand = _brandService.GetById(x.BrandId),
+                Color = _colorService.GetById(x.ColorId),
+                ModelYear = x.ModelYear,
+                DailyPrice = x.DailyPrice,
+                Description = x.Description
+            }).ToList();
+
+            var allMercedes = _brandService.GetAll(b => b.Name.Contains("Mercedes")).SelectMany(b => _carService.GetAll(x => x.BrandId == b.Id)).ToList();
+
             Console.WriteLine("============ Seçilen Araç ================");
             WriteCar(_carService.GetById(1));
 
