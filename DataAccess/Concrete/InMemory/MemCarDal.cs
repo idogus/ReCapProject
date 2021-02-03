@@ -23,7 +23,7 @@ namespace DataAccess.Concrete.InMemory
         }
         public void Add(Car entity)
         {
-            entity.Id = _cars.Max(x => x.Id) + 1;
+            entity.Id = _cars.Max(x => x.Id) + 1; // cars nesnesindeki Id numaraları tek artımlı olarak yaratan code satırı.
             _cars.Add(entity);
         }
 
@@ -34,7 +34,7 @@ namespace DataAccess.Concrete.InMemory
 
         public List<Car> GetAll(Func<Car, bool> filter = null)
         {
-            return filter == null ? _cars : _cars.Where(filter).ToList();
+            return filter == null ? _cars : _cars.Where(filter).ToList(); //metod parametresinde filtre gelip gelmediğini kontrol eden Ternary (tek satır if) koşulu
         }
 
         public Car GetById(int id)
