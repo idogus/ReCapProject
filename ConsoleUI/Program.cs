@@ -29,7 +29,6 @@ namespace ConsoleUI
 
             try
             {
-                ValidationTool.FluentValidate(new BrandValidator(), car.Brand);
                 _brandService.Add(car.Brand);
             }
             catch (ValidationException ex)
@@ -40,7 +39,7 @@ namespace ConsoleUI
 
             try
             {
-                ValidationTool.FluentValidate(new CarValidator(), car);
+                
                 _carService.Add(car);
             }
             catch (ValidationException ex)

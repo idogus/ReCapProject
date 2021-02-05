@@ -22,10 +22,8 @@ namespace Business.Concrete
 
         public void Add(Car entity)
         {
-            
+            ValidationTool.FluentValidate(new CarValidator(), entity);
             _carDal.Add(entity);
-
-
         }
 
         public void Delete(Car entity)
