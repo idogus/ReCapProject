@@ -31,10 +31,14 @@ namespace DataAccess.Concrete.InMemory
             _brands.Remove(entity);
         }
 
-
-        public List<Brand> GetAll(Func<Brand, bool> filter = null)
+        public Brand Get(Expression<Func<Brand, bool>> filter)
         {
-            return filter == null ? _brands : _brands.Where(filter).ToList();
+            return _brands.SingleOrDefault(filter.Compile());
+        }
+
+        public List<Brand> GetAll(Expression<Func<Brand, bool>> filter = null)
+        {
+            return filter == null ? _brands : _brands.Where(filter.Compile()).ToList();
         }
 
         public Brand GetById(int id)

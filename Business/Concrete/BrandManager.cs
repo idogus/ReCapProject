@@ -3,6 +3,7 @@ using DataAccess.Abstract;
 using Entities.Concrete;
 using System;
 using System.Collections.Generic;
+using System.Linq.Expressions;
 using System.Text;
 
 namespace Business.Concrete
@@ -28,7 +29,7 @@ namespace Business.Concrete
             _brandDal.Delete(brand);
         }
 
-        public List<Brand> GetAll(Func<Brand, bool> filter = null)
+        public List<Brand> GetAll(Expression<Func<Brand, bool>> filter = null)
         {
             return _brandDal.GetAll(filter);
         }

@@ -31,9 +31,14 @@ namespace DataAccess.Concrete.InMemory
             _colors.Remove(entity);
         }
 
-        public List<Color> GetAll(Func<Color, bool> filter = null)
+        public Color Get(Expression<Func<Color, bool>> filter)
         {
-            return filter == null ? _colors : _colors.Where(filter).ToList();
+            return _colors.SingleOrDefault(filter.Compile());
+        }
+
+        public List<Color> GetAll(Expression<Func<Color, bool>> filter = null)
+        {
+            return filter == null ? _colors : _colors.Where(filter.Compile()).ToList();
         }
 
         public Color GetById(int id)

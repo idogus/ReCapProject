@@ -1,8 +1,11 @@
 ﻿using Business.Abstract;
 using Business.DependencySolvers;
+using Business.ValidationRules.FluentValidation;
 using ConsoleUI.Models;
+using Core.CrossCuttingConserns.FluentValidation;
 using Core.Entity;
 using Entities.Concrete;
+using FluentValidation;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -17,9 +20,35 @@ namespace ConsoleUI
         static void Main(string[] args)
         {
             // Business katmanındaki Ninject dependency solver instance factory metodu
-            _carService = InstanceFactory.GetInstance<ICarService>();      
+            _carService = InstanceFactory.GetInstance<ICarService>();
             _colorService = InstanceFactory.GetInstance<IColorService>();
             _brandService = InstanceFactory.GetInstance<IBrandService>();
+
+            // 8. Gün ödevi testi
+            Car car = new Car { ColorId = 1, Description = "Test", DailyPrice = 0, ModelYear = 2021, Brand = new Brand { Name = "A" } };
+
+            try
+            {
+                ValidationTool.FluentValidate(new BrandValidator(), car.Brand);
+                _brandService.Add(car.Brand);
+            }
+            catch (ValidationException ex)
+            {
+                var msg = ex.Message.Split(':')[ex.Message.Split(':').Length - 1];
+                Console.WriteLine(msg); ;
+            }
+
+            try
+            {
+                ValidationTool.FluentValidate(new CarValidator(), car);
+                _carService.Add(car);
+            }
+            catch (ValidationException ex)
+            {
+                var msg = ex.Message.Split(':')[ex.Message.Split(':').Length - 1];
+                Console.WriteLine(msg); ;
+            }
+
 
             WriteTheCars(); // UI metodu biraz clean code
 
@@ -29,7 +58,7 @@ namespace ConsoleUI
                 Id = x.Id,
                 BrandId = x.BrandId,
                 ColorId = x.ColorId,
-                Brand = _brandService.GetById(x.BrandId), 
+                Brand = _brandService.GetById(x.BrandId),
                 Color = _colorService.GetById(x.ColorId),
                 ModelYear = x.ModelYear,
                 DailyPrice = x.DailyPrice,

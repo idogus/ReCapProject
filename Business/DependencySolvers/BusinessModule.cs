@@ -1,6 +1,7 @@
 ﻿using Business.Abstract;
 using Business.Concrete;
 using DataAccess.Abstract;
+using DataAccess.Concrete.EntityFramework;
 using DataAccess.Concrete.InMemory;
 using Ninject.Modules;
 using System;
@@ -14,13 +15,13 @@ namespace Business.DependencySolvers
         public override void Load()
         {
             Bind<IBrandService>().To<BrandManager>().InSingletonScope();
-            Bind<IBrandDal>().To<MemBrandDal>().InSingletonScope();
+            Bind<IBrandDal>().To<EfBrandDal>().InSingletonScope();
 
             Bind<IColorService>().To<ColorManager>().InSingletonScope();
-            Bind<IColorDal>().To<MemColorDal>().InSingletonScope();
+            Bind<IColorDal>().To<EfColorDal>().InSingletonScope();
             
             Bind<ICarService>().To<CarManager>().InSingletonScope();
-            Bind<ICarDal>().To<MemCarDal>().InSingletonScope();
+            Bind<ICarDal>().To<EfCarDal>().InSingletonScope();
         }
     }
 }

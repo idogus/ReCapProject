@@ -1,9 +1,12 @@
 ﻿using Business.Abstract;
+using Business.ValidationRules.FluentValidation;
+using Core.CrossCuttingConserns.FluentValidation;
 using DataAccess.Abstract;
 using Entities.Concrete;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Linq.Expressions;
 using System.Text;
 
 namespace Business.Concrete
@@ -19,7 +22,10 @@ namespace Business.Concrete
 
         public void Add(Car entity)
         {
+            
             _carDal.Add(entity);
+
+
         }
 
         public void Delete(Car entity)
@@ -29,7 +35,7 @@ namespace Business.Concrete
             _carDal.Delete(car);
         }
 
-        public List<Car> GetAll(Func<Car, bool> filter = null)
+        public List<Car> GetAll(Expression<Func<Car, bool>> filter = null)
         {
             return _carDal.GetAll(filter);
         }
