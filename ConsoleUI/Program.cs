@@ -29,7 +29,6 @@ namespace ConsoleUI
 
             try
             {
-                ValidationTool.FluentValidate(new BrandValidator(), car.Brand);
                 _brandService.Add(car.Brand);
             }
             catch (ValidationException ex)
@@ -40,7 +39,6 @@ namespace ConsoleUI
 
             try
             {
-                ValidationTool.FluentValidate(new CarValidator(), car);
                 _carService.Add(car);
             }
             catch (ValidationException ex)
@@ -48,7 +46,6 @@ namespace ConsoleUI
                 var msg = ex.Message.Split(':')[ex.Message.Split(':').Length - 1];
                 Console.WriteLine(msg); ;
             }
-
 
             WriteTheCars(); // UI metodu biraz clean code
 

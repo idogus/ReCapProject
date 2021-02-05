@@ -1,6 +1,9 @@
 ﻿using Business.Abstract;
+using Business.ValidationRules.FluentValidation;
+using Core.CrossCuttingConserns.FluentValidation;
 using DataAccess.Abstract;
 using Entities.Concrete;
+using FluentValidation;
 using System;
 using System.Collections.Generic;
 using System.Linq.Expressions;
@@ -19,6 +22,7 @@ namespace Business.Concrete
 
         public void Add(Brand entity)
         {
+            ValidationTool.FluentValidate(new BrandValidator(), entity);
             _brandDal.Add(entity);
         }
 

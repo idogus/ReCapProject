@@ -22,10 +22,8 @@ namespace Business.Concrete
 
         public void Add(Car entity)
         {
-            
+            ValidationTool.FluentValidate(new CarValidator(), entity);
             _carDal.Add(entity);
-
-
         }
 
         public void Delete(Car entity)
@@ -38,6 +36,16 @@ namespace Business.Concrete
         public List<Car> GetAll(Expression<Func<Car, bool>> filter = null)
         {
             return _carDal.GetAll(filter);
+        }
+
+        public List<Car> GetByBrandId(int brandId)
+        {
+            return _carDal.GetAll(x => x.BrandId == brandId);
+        }
+
+        public List<Car> GetByColorId(int colorId)
+        {
+            return _carDal.GetAll(x => x.ColorId == colorId);
         }
 
         public Car GetById(int id)
