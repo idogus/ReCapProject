@@ -27,15 +27,16 @@ namespace ConsoleUI
 
 
             // 8. Gün ödevi testi
-            Brand brand = new Brand { Name = "Mercedes" };
-            Color color = new Color { Name = "Beyaz" };
-            Car car = new Car {Description = "Otomatik klima, Otomatik vites", DailyPrice = 0, ModelYear = 2021, Brand = new Brand { Name = "S" }, ColorId = 1  };
+            Brand ford = new Brand { Name = "Ford" };
+            Brand a = new Brand { Name = "A" };
+            Color balKopugu = new Color { Name = "Bal Köpüğü" };
+            Car car = new Car {Description = "Otomatik klima, Otomatik vites", DailyPrice = 1200, ModelYear = 2021, BrandId=2, ColorId = 2  };
 
             try
             {
-                _colorService.Add(color);
-                _brandService.Add(brand);
-                _brandService.Add(car.Brand);
+                _colorService.Add(balKopugu);
+                _brandService.Add(ford);
+                _brandService.Add(a);
             }
             catch (ValidationException ex)
             {
@@ -60,7 +61,7 @@ namespace ConsoleUI
             var allSkodas = _carService.GetCarDTOs().Where(x => x.Brand == "Skoda").ToList();
             WriteTheCars(allSkodas);
 
-            WriteCar(_carService.GetCarDTO(4)); // Id değerine göre tablodan değer getiren sorgu
+            WriteCar(_carService.GetCarDTO(6)); // Id değerine göre tablodan değer getiren sorgu
 
             WriteTheCars(_carService.GetCarDTOs());
         }
