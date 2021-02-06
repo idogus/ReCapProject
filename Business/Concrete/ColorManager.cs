@@ -19,7 +19,10 @@ namespace Business.Concrete
 
         public void Add(Color entity)
         {
-            _colorDal.Add(entity);
+            if (_colorDal.Get(x => x.Name == entity.Name) == null)
+            {
+                _colorDal.Add(entity);
+            }
         }
 
         public void Delete(Color entity)

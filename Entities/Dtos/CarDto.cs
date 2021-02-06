@@ -1,10 +1,11 @@
-﻿using System;
+﻿using Core.Entity;
+using System;
 using System.Collections.Generic;
 using System.Text;
 
 namespace Entities.Dtos
 {
-    public class CarDTO
+    public class CarDTO : IEntity
     {
         public string Brand { get; set; }
         public string Color { get; set; }

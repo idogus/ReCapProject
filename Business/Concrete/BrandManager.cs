@@ -23,7 +23,10 @@ namespace Business.Concrete
         public void Add(Brand entity)
         {
             ValidationTool.FluentValidate(new BrandValidator(), entity);
-            _brandDal.Add(entity);
+            if (_brandDal.Get(x => x.Name == entity.Name) == null)
+            {
+                _brandDal.Add(entity);
+            }
         }
 
         public void Delete(Brand entity)

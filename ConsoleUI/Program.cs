@@ -1,13 +1,14 @@
 ﻿using Business.Abstract;
 using Business.DependencySolvers;
 using Business.ValidationRules.FluentValidation;
-using ConsoleUI.Models;
 using Core.CrossCuttingConserns.FluentValidation;
 using Core.Entity;
 using Entities.Concrete;
+using Entities.Dtos;
 using FluentValidation;
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 
 namespace ConsoleUI
@@ -24,11 +25,16 @@ namespace ConsoleUI
             _colorService = InstanceFactory.GetInstance<IColorService>();
             _brandService = InstanceFactory.GetInstance<IBrandService>();
 
+
             // 8. Gün ödevi testi
-            Car car = new Car { ColorId = 1, Description = "Test", DailyPrice = 0, ModelYear = 2021, Brand = new Brand { Name = "A" } };
+            Brand brand = new Brand { Name = "Mercedes" };
+            Color color = new Color { Name = "Beyaz" };
+            Car car = new Car {Description = "Otomatik klima, Otomatik vites", DailyPrice = 0, ModelYear = 2021, Brand = new Brand { Name = "S" }, ColorId = 1  };
 
             try
             {
+                _colorService.Add(color);
+                _brandService.Add(brand);
                 _brandService.Add(car.Brand);
             }
             catch (ValidationException ex)
@@ -47,98 +53,21 @@ namespace ConsoleUI
                 Console.WriteLine(msg); ;
             }
 
-            WriteTheCars(); // UI metodu biraz clean code
+            var cars = _carService.GetAll();
 
-            // ilişkili(bağlı) tabloları ekleyerek birlikte geriye ana tabloyu döndürüen Linq-Lambda Select metodu
-            var resultByLinkedTables = _carService.GetAll().Select(x => new Car
-            {
-                Id = x.Id,
-                BrandId = x.BrandId,
-                ColorId = x.ColorId,
-                Brand = _brandService.GetById(x.BrandId),
-                Color = _colorService.GetById(x.ColorId),
-                ModelYear = x.ModelYear,
-                DailyPrice = x.DailyPrice,
-                Description = x.Description
-            }).ToList();
+            WriteTheCars(_carService.GetCarDTOs()); // UI metodu 
 
-            // Bire çok tablolardan veri getiren markaya ait araçları getiren Linq-lambda SelectMany Metodu
-            var allMercedes = _brandService.GetAll(b => b.Name.Contains("Mercedes")).SelectMany(b => _carService.GetAll(x => x.BrandId == b.Id)).ToList();
+            var allSkodas = _carService.GetCarDTOs().Where(x => x.Brand == "Skoda").ToList();
+            WriteTheCars(allSkodas);
 
-            Console.WriteLine("============ Seçilen Araç ================");
-            WriteCar(_carService.GetById(1)); // Id değerine göre tablodan değer getiren sorgu
+            WriteCar(_carService.GetCarDTO(4)); // Id değerine göre tablodan değer getiren sorgu
 
-            Console.WriteLine("============= Eklenen Araç ================");
-
-            // Instance anında nesne yaratma
-            Car addedCar = new Car { BrandId = 1, ColorId = 3, DailyPrice = 2000, ModelYear = 2021, Description = "Çok noktalı klima, Multimedia sistemi" };
-            _carService.Add(addedCar); // Business katmanında veri ekleme
-            WriteCar(addedCar);
-            WriteTheCars();
-        }
-
-        // Bir DTO listesi döndüren Linq join sorgusu
-        private static IEnumerable<CarDTO> GetCarDTOsByLinq()
-        {
-            IEnumerable<CarDTO> resultLinq = from c in _carService.GetAll()
-                                             join b in _brandService.GetAll()
-                                             on c.BrandId equals b.Id
-                                             join cl in _colorService.GetAll()
-                                             on c.ColorId equals cl.Id
-                                             select new CarDTO
-                                             {
-                                                 Brand = b.Name,
-                                                 Color = cl.Name,
-                                                 DailyPrice = c.DailyPrice,
-                                                 Description = c.Description,
-                                                 ModelYear = c.ModelYear
-                                             };
-            return resultLinq;
-        }
-
-        // Bir DTO nesne listesi döndüren Linq-lambda join sorgusu
-        private static List<CarDTO> GetCarDTOsByLambda()
-        {
-            var resultLambda = _carService.GetAll()
-                .Join(_brandService.GetAll(), c => c.BrandId, b => b.Id, (c, b) => new Car // Join metodu parametreleri( bağlanacak tablo, sol tablonun bağlantı parametresi, sağ tablonun parametresi, sağ ve sol tabloyu döndüren lambda fonsiyon)
-                {
-                    Id = c.Id,
-                    Brand = b,
-                    BrandId = c.BrandId,
-                    ColorId = c.ColorId,
-                    DailyPrice = c.DailyPrice,
-                    Description = c.Description,
-                    ModelYear = c.ModelYear
-                }).Join(_colorService.GetAll(), c => c.ColorId, cl => cl.Id, (c, cl) => new CarDTO
-                {
-                    Brand = c.Brand.Name,
-                    Color = cl.Name,
-                    DailyPrice = c.DailyPrice,
-                    ModelYear = c.ModelYear,
-                    Description = c.Description
-                }).ToList();
-            return resultLambda;
-        }
-        // Entity parametresiyle geriye tek bir DTO nesnesi döndüren metod
-        private static CarDTO GetCarDTO(Car car)
-        {
-            var resultDto = new CarDTO
-            {
-                Brand = _brandService.GetById(car.BrandId).ToString(),
-                Color = _colorService.GetById(car.ColorId).ToString(),
-                ModelYear = car.ModelYear,
-                DailyPrice = car.DailyPrice,
-                Description = car.Description
-            };
-
-            return resultDto;
+            WriteTheCars(_carService.GetCarDTOs());
         }
 
         // Araç listesini yazdıran metod
-        private static void WriteTheCars()
+        private static void WriteTheCars(IList<CarDTO> cars)
         {
-            List<CarDTO> cars = _carService.GetAll().Select(x => GetCarDTO(x)).ToList();
-
             Console.WriteLine("=============== Araç Listesi ================");
 
             foreach (var car in cars)
@@ -147,10 +76,13 @@ namespace ConsoleUI
             }
         }
         // Tek aracı yazdıran metod
-        private static void WriteCar(Car car)
+        private static void WriteCar(CarDTO car)
         {
-            var carDTO = GetCarDTO(car);
-            Console.WriteLine($"{carDTO.Brand} marka \n{ carDTO.Color} renkli \n{car.Description} özelliklerine sahip \n{carDTO.ModelYear} model araç günlüğü \n{carDTO.DailyPrice.ToString("#,###.00")} TL");
+            if (car != null)
+            {
+                Console.WriteLine("============ Seçilen Araç ================");
+                Console.WriteLine($"{car.Brand} marka \n{ car.Color} renkli \n{car.Description} özelliklerine sahip \n{car.ModelYear} model araç günlüğü \n{car.DailyPrice.ToString("#,###.00")} TL");
+            }
         }
     }
 }

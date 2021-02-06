@@ -9,12 +9,13 @@ namespace DataAccess.Concrete.EntityFramework.Context
 {
     public class ReCapContext : DbContext
     {
+        public ReCapContext():base()
+        {
+
+        }
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {
-            optionsBuilder.UseSqlServer(@"Server=.;Database=ReCapWebinarED;Integrated Security=True;", sqlServerOptionsAction: sqlOptions =>
-            {
-                sqlOptions.EnableRetryOnFailure( maxRetryCount: 10, maxRetryDelay: TimeSpan.FromSeconds(30), errorNumbersToAdd:null);
-            });
+            optionsBuilder.UseSqlServer(@"Server=(localdb)\MSSQLLocalDB;Database=ReCapWebinarED;Integrated Security=True;");
 
         }
         protected override void OnModelCreating(ModelBuilder modelBuilder)

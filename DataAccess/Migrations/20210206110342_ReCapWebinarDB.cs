@@ -2,7 +2,7 @@
 
 namespace DataAccess.Migrations
 {
-    public partial class Initial : Migration
+    public partial class ReCapWebinarDB : Migration
     {
         protected override void Up(MigrationBuilder migrationBuilder)
         {

@@ -9,8 +9,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace DataAccess.Migrations
 {
     [DbContext(typeof(ReCapContext))]
-    [Migration("20210205092138_Initial")]
-    partial class Initial
+    [Migration("20210206110342_ReCapWebinarDB")]
+    partial class ReCapWebinarDB
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {

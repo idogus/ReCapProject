@@ -11,8 +11,16 @@ namespace DataAccess.Concrete.EntityFramework.Mapping
     {
         public void Configure(EntityTypeBuilder<Car> builder)
         {
-            builder.ToTable(@"Cars", @"dbo");
-            builder.HasKey(x => x.Id);
+            builder.ToTable(@"Cars", @"dbo")
+                .HasKey(x => x.Id);
+
+            //builder.HasOne(b => b.Brand)
+            //    .WithMany(c => c.Cars)
+            //    .HasForeignKey(f => f.BrandId);
+
+            //builder.HasOne(cl => cl.Color)
+            //    .WithMany(c => c.Cars)
+            //    .HasForeignKey(f => f.ColorId);
 
             builder.Property(x => x.BrandId).IsRequired();
             builder.Property(x => x.ColorId).IsRequired();
