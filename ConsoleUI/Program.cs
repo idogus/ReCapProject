@@ -25,12 +25,25 @@ namespace ConsoleUI
             _colorService = InstanceFactory.GetInstance<IColorService>();
             _brandService = InstanceFactory.GetInstance<IBrandService>();
 
+            SekizinciGunTest();
 
+            WriteTheCars(_carService.GetCarDTOs()); // UI metodu 
+
+            var allSkodas = _carService.GetCarDTOs().Where(x => x.Brand == "Skoda").ToList();
+            WriteTheCars(allSkodas);
+
+            WriteCar(_carService.GetCarDTO(6)); // Id değerine göre tablodan değer getiren sorgu
+
+            WriteTheCars(_carService.GetCarDTOs());
+        }
+
+        private static void SekizinciGunTest()
+        {
             // 8. Gün ödevi testi
             Brand ford = new Brand { Name = "Ford" };
             Brand a = new Brand { Name = "A" };
             Color balKopugu = new Color { Name = "Bal Köpüğü" };
-            Car car = new Car {Description = "Otomatik klima, Otomatik vites", DailyPrice = 1200, ModelYear = 2021, BrandId=2, ColorId = 2  };
+            Car car = new Car { Description = "Otomatik klima, Otomatik vites", DailyPrice = 1200, ModelYear = 2021, BrandId = 2, ColorId = 2 };
 
             try
             {
@@ -53,17 +66,6 @@ namespace ConsoleUI
                 var msg = ex.Message.Split(':')[ex.Message.Split(':').Length - 1];
                 Console.WriteLine(msg); ;
             }
-
-            var cars = _carService.GetAll();
-
-            WriteTheCars(_carService.GetCarDTOs()); // UI metodu 
-
-            var allSkodas = _carService.GetCarDTOs().Where(x => x.Brand == "Skoda").ToList();
-            WriteTheCars(allSkodas);
-
-            WriteCar(_carService.GetCarDTO(6)); // Id değerine göre tablodan değer getiren sorgu
-
-            WriteTheCars(_carService.GetCarDTOs());
         }
 
         // Araç listesini yazdıran metod
