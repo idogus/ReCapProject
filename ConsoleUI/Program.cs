@@ -25,14 +25,14 @@ namespace ConsoleUI
             _colorService = InstanceFactory.GetInstance<IColorService>();
             _brandService = InstanceFactory.GetInstance<IBrandService>();
 
-            SekizinciGunTest();
+            //SekizinciGunTest();
 
-            WriteTheCars(_carService.GetCarDTOs()); // UI metodu 
+            //WriteTheCars(_carService.GetCarDTOs()); // UI metodu 
 
-            var allSkodas = _carService.GetCarDTOs().Where(x => x.Brand == "Skoda").ToList();
-            WriteTheCars(allSkodas);
+            //var allSkodas = _carService.GetCarDTOs().Where(x => x.Brand == "Skoda").ToList();
+            //WriteTheCars(allSkodas);
 
-            WriteCar(_carService.GetCarDTO(6)); // Id değerine göre tablodan değer getiren sorgu
+            //WriteCar(_carService.GetCarDTO(6)); // Id değerine göre tablodan değer getiren sorgu
 
             WriteTheCars(_carService.GetCarDTOs());
         }
