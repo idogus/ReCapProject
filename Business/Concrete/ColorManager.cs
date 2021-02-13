@@ -1,4 +1,5 @@
 ﻿using Business.Abstract;
+using Core.Utilities.Results;
 using DataAccess.Abstract;
 using Entities.Concrete;
 using System;
@@ -17,34 +18,38 @@ namespace Business.Concrete
             _colorDal = brandDal;
         }
 
-        public void Add(Color entity)
+        public IResult Add(Color entity)
         {
             if (_colorDal.Get(x => x.Name == entity.Name) == null)
             {
                 _colorDal.Add(entity);
+                return new SuccessResult();
             }
+            return new ErrorResult();
         }
 
-        public void Delete(Color entity)
+        public IResult Delete(Color entity)
         {
             var color = _colorDal.GetById(entity.Id);
-            if (color == null) throw new NullReferenceException("Silinecek renk bulunamadı!");
+            if (color == null) return new ErrorResult();
             _colorDal.Delete(color);
+            return new SuccessResult();
         }
 
-        public List<Color> GetAll(Expression<Func<Color, bool>> filter = null)
+        public IDataResult<List<Color>> GetAll(Expression<Func<Color, bool>> filter = null)
         {
-            return _colorDal.GetAll(filter);
+            return new SuccessDataResult<List<Color>>(_colorDal.GetAll(filter));
         }
 
-        public Color GetById(int id)
+        public IDataResult<Color> GetById(int id)
         {
-            return _colorDal.GetById(id);
+            return new SuccessDataResult<Color>(_colorDal.GetById(id));
         }
 
-        public void Update(Color entity)
+        public IResult Update(Color entity)
         {
             _colorDal.Update(entity);
+            return new SuccessResult();
         }
     }
 }

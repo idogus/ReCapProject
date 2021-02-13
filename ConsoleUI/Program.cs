@@ -18,13 +18,18 @@ namespace ConsoleUI
         private static ICarService _carService;
         private static IBrandService _brandService;
         private static IColorService _colorService;
+        private static IUserService _userService;
+        private static ICustomerService _customerService;
+        private static IRentalService _rentalService;
         static void Main(string[] args)
         {
             // Business katmanındaki Ninject dependency solver instance factory metodu
             _carService = InstanceFactory.GetInstance<ICarService>();
             _colorService = InstanceFactory.GetInstance<IColorService>();
             _brandService = InstanceFactory.GetInstance<IBrandService>();
-
+            _userService = InstanceFactory.GetInstance<IUserService>();
+            _customerService = InstanceFactory.GetInstance<ICustomerService>();
+            _rentalService = InstanceFactory.GetInstance<IRentalService>();
             //SekizinciGunTest();
 
             //WriteTheCars(_carService.GetCarDTOs()); // UI metodu 
@@ -34,7 +39,44 @@ namespace ConsoleUI
 
             //WriteCar(_carService.GetCarDTO(6)); // Id değerine göre tablodan değer getiren sorgu
 
-            WriteTheCars(_carService.GetCarDTOs());
+            //WriteTheCars(_carService.GetCarDTOs());
+
+            //Task10_1();
+
+            //CreateUserAndCustomer();
+
+            //RentCar();
+
+            //ReturnCar();
+        }
+
+        private static void ReturnCar()
+        {
+            var carsAtCustomer = _rentalService.GetAll(x => x.CustomerId == 1 && x.ReturnDate == null);
+            foreach (var car in carsAtCustomer.Data)
+            {
+                if (car.CarId == 7)
+                {
+                    car.ReturnDate = DateTime.Now;
+                    _rentalService.Update(car);
+                }
+            }
+        }
+
+        private static void RentCar()
+        {
+            Console.WriteLine(_rentalService.Add(new Rental { CarId = 7, CustomerId = 1, RentDate = DateTime.Now.Date }).Message);
+        }
+
+        private static void CreateUserAndCustomer()
+        {
+            Console.WriteLine(_userService.Add(new User { FirstName = "İbrahim", LastName = "Doğuş", EMail = "idogus@gmail.com", UserName = "idogus", Password = "1234" }).Message);
+            Console.WriteLine(_customerService.Add(new Customer { UserId = 1, CompanyName = "Doğuş Yazılım" }).Message);
+        }
+
+        private static void Task10_1()
+        {
+            Console.WriteLine(_brandService.Add(new Brand { Name = "Vişne Çürüğü" }).Message);
         }
 
         private static void SekizinciGunTest()
