@@ -22,6 +22,15 @@ namespace Business.DependencySolvers
             
             Bind<ICarService>().To<CarManager>().InSingletonScope();
             Bind<ICarDal>().To<EfCarDal>().InSingletonScope();
+            
+            Bind<IUserService>().To<UserManager>().InSingletonScope();
+            Bind<IUserDal>().To<EfUserDal>().InSingletonScope();
+            
+            Bind<ICustomerService>().To<CustomerManager>().InSingletonScope();
+            Bind<ICustomerDal>().To<EfCustomerDal>().InSingletonScope();
+            
+            Bind<IRentalService>().To<RentalManager>().InSingletonScope();
+            Bind<IRentalDal>().To<EfRentalDal>().InSingletonScope();
         }
     }
 }

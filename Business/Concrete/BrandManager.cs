@@ -1,6 +1,8 @@
 ﻿using Business.Abstract;
+using Business.Constants;
 using Business.ValidationRules.FluentValidation;
 using Core.CrossCuttingConserns.FluentValidation;
+using Core.Utilities.Results;
 using DataAccess.Abstract;
 using Entities.Concrete;
 using FluentValidation;
@@ -20,35 +22,39 @@ namespace Business.Concrete
             _brandDal = brandDal;
         }
 
-        public void Add(Brand entity)
+        public IResult Add(Brand entity)
         {
             ValidationTool.FluentValidate(new BrandValidator(), entity);
             if (_brandDal.Get(x => x.Name == entity.Name) == null)
             {
                 _brandDal.Add(entity);
+                return new SuccessResult(Messages.BrandAdded);
             }
+            return new ErrorResult(Messages.BrandExists);
         }
 
-        public void Delete(Brand entity)
+        public IResult Delete(Brand entity)
         {
             var brand = _brandDal.GetById(entity.Id);
-            if (brand == null) throw new NullReferenceException("Silinecek marka bulunamadı!");
+            if (brand == null) return new ErrorResult();
             _brandDal.Delete(brand);
+            return new SuccessResult();
         }
 
-        public List<Brand> GetAll(Expression<Func<Brand, bool>> filter = null)
+        public IDataResult<List<Brand>> GetAll(Expression<Func<Brand, bool>> filter = null)
         {
-            return _brandDal.GetAll(filter);
+            return new SuccessDataResult<List<Brand>>(_brandDal.GetAll(filter));
         }
 
-        public Brand GetById(int id)
+        public IDataResult<Brand> GetById(int id)
         {
-            return _brandDal.GetById(id);
+            return new SuccessDataResult<Brand>(_brandDal.GetById(id));
         }
 
-        public void Update(Brand entity)
+        public IResult Update(Brand entity)
         {
             _brandDal.Update(entity);
+            return new SuccessResult();
         }
     }
 }

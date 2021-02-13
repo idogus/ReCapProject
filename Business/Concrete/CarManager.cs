@@ -1,6 +1,7 @@
 ﻿using Business.Abstract;
 using Business.ValidationRules.FluentValidation;
 using Core.CrossCuttingConserns.FluentValidation;
+using Core.Utilities.Results;
 using DataAccess.Abstract;
 using Entities.Concrete;
 using Entities.Dtos;
@@ -21,52 +22,55 @@ namespace Business.Concrete
             _carDal = carDal;
         }
 
-        public void Add(Car entity)
+        public IResult Add(Car entity)
         {
             ValidationTool.FluentValidate(new CarValidator(), entity);
             _carDal.Add(entity);
+            return new SuccessResult();
         }
 
-        public void Delete(Car entity)
+        public IResult Delete(Car entity)
         {
             var car = _carDal.GetById(entity.Id);
-            if (car == null) throw new NullReferenceException("Silinecek araç bulunamadı!");
+            if (car == null) return new ErrorResult();
             _carDal.Delete(car);
+            return new SuccessResult();
         }
 
-        public List<Car> GetAll(Expression<Func<Car, bool>> filter = null)
+        public IDataResult<List<Car>> GetAll(Expression<Func<Car, bool>> filter = null)
         {
-            return _carDal.GetAll(filter);
+            return new SuccessDataResult<List<Car>>(_carDal.GetAll(filter));
         }
 
-        public List<Car> GetByBrandId(int brandId)
+        public IDataResult<List<Car>> GetByBrandId(int brandId)
         {
-            return _carDal.GetAll(x => x.BrandId == brandId);
+            return new SuccessDataResult<List<Car>>(_carDal.GetAll(x => x.BrandId == brandId));
         }
 
-        public List<Car> GetByColorId(int colorId)
+        public IDataResult<List<Car>> GetByColorId(int colorId)
         {
-            return _carDal.GetAll(x => x.ColorId == colorId);
+            return new SuccessDataResult<List<Car>>(_carDal.GetAll(x => x.ColorId == colorId));
         }
 
-        public Car GetById(int id)
+        public IDataResult<Car> GetById(int id)
         {
-            return _carDal.GetById(id);
+            return new SuccessDataResult<Car>(_carDal.GetById(id));
         }
 
-        public void Update(Car entity)
+        public IResult Update(Car entity)
         {
             _carDal.Update(entity);
+            return new SuccessResult();
         }
 
-        public List<CarDTO> GetCarDTOs()
+        public IDataResult<List<CarDTO>> GetCarDTOs()
         {
-            return _carDal.GetCarsDetails();
+            return new SuccessDataResult<List<CarDTO>>(_carDal.GetCarsDetails());
         }
 
-        public CarDTO GetCarDTO(int id)
+        public IDataResult<CarDTO> GetCarDTO(int id)
         {
-            return _carDal.GetCarDetailsById(id);
+            return new SuccessDataResult<CarDTO>(_carDal.GetCarDetailsById(id));
         }
     }
 }
