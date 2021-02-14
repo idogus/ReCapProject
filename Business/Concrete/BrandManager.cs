@@ -1,7 +1,7 @@
 ﻿using Business.Abstract;
 using Business.Constants;
 using Business.ValidationRules.FluentValidation;
-using Core.CrossCuttingConserns.FluentValidation;
+using Core.CrossCuttingConserns.Validation;
 using Core.Utilities.Results;
 using DataAccess.Abstract;
 using Entities.Concrete;
@@ -24,7 +24,7 @@ namespace Business.Concrete
 
         public IResult Add(Brand entity)
         {
-            ValidationTool.FluentValidate(new BrandValidator(), entity);
+            ValidationTool.Validate(new BrandValidator(), entity);
             if (_brandDal.Get(x => x.Name == entity.Name) == null)
             {
                 _brandDal.Add(entity);

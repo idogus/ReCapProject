@@ -1,6 +1,6 @@
 ﻿using Business.Abstract;
 using Business.ValidationRules.FluentValidation;
-using Core.CrossCuttingConserns.FluentValidation;
+using Core.CrossCuttingConserns.Validation;
 using Core.Utilities.Results;
 using DataAccess.Abstract;
 using Entities.Concrete;
@@ -24,7 +24,7 @@ namespace Business.Concrete
 
         public IResult Add(Car entity)
         {
-            ValidationTool.FluentValidate(new CarValidator(), entity);
+            ValidationTool.Validate(new CarValidator(), entity);
             _carDal.Add(entity);
             return new SuccessResult();
         }
