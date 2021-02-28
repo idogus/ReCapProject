@@ -33,16 +33,6 @@ namespace WebAPI.Controllers
             var check = CheckFormValues(file, carImage);
             if (check != null) return BadRequest(check);
 
-            //if (file == null || file.Length <= 0)
-            //    return BadRequest("Dosya seçmediniz");
-
-            //if (carImage.CarId == 0)
-            //    return BadRequest("Araç seçmediniz");
-
-            //var fileExtension = Path.GetExtension(file.FileName);
-            //if (!(fileExtension.ToLower() == ".jpg" || fileExtension.ToLower() == ".png"))
-            //    return BadRequest(@"Seçilen dosya uygun değil! '*.jpg' || '*.png'");
-
             var imagePath = ImageUploader.ImageUpload(DefaultImagePath, file);
 
             carImage.ImagePath = imagePath.Result;

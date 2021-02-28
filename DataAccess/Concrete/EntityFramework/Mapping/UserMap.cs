@@ -1,4 +1,5 @@
-﻿using Entities.Concrete;
+﻿using Core.Entities.Concrete;
+using Entities.Concrete;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 using System;
@@ -14,9 +15,8 @@ namespace DataAccess.Concrete.EntityFramework.Mapping
             builder.ToTable(@"Users", @"dbo");
             builder.HasKey(x => x.Id);
 
-            builder.Property(x => x.UserName).IsRequired();
-            builder.Property(x => x.Password).IsRequired();
             builder.Property(x => x.EMail).IsRequired();
+            builder.Property(x => x.PasswordHash).IsRequired();
         }
     }
 }

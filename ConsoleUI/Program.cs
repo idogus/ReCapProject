@@ -1,5 +1,6 @@
 ﻿using Business.Abstract;
 using Business.DependencySolvers;
+using Core.Entities.Concrete;
 using Entities.Concrete;
 using Entities.Dtos;
 using FluentValidation;
@@ -65,7 +66,7 @@ namespace ConsoleUI
 
         private static void CreateUserAndCustomer()
         {
-            Console.WriteLine(_userService.Add(new User { FirstName = "İbrahim", LastName = "Doğuş", EMail = "idogus@gmail.com", UserName = "idogus", Password = "1234" }).Message);
+            //Console.WriteLine(_userService.Add(new User { FirstName = "İbrahim", LastName = "Doğuş", EMail = "idogus@gmail.com", PasswordHash = "1234" }).Message);
             Console.WriteLine(_customerService.Add(new Customer { UserId = 1, CompanyName = "Doğuş Yazılım" }).Message);
         }
 

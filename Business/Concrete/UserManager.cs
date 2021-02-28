@@ -1,4 +1,5 @@
 ﻿using Business.Abstract;
+using Core.Entities.Concrete;
 using Core.Utilities.Results;
 using DataAccess.Abstract;
 using Entities.Concrete;
@@ -37,9 +38,19 @@ namespace Business.Concrete
             return new SuccessDataResult<List<User>>(_userDal.GetAll(filter));
         }
 
+        public IDataResult<User> GetByEMail(string eMail)
+        {
+            return new SuccessDataResult<User>(_userDal.Get(x => x.EMail == eMail));
+        }
+
         public IDataResult<User> GetById(int id)
         {
             return new SuccessDataResult<User>(_userDal.GetById(id));
+        }
+
+        public IDataResult<List<OperationClaim>> GetClaims(User user)
+        {
+            return new SuccessDataResult<List<OperationClaim>>(_userDal.GetClaims(user));
         }
 
         public IResult Update(User entity)
