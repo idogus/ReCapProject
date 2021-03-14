@@ -1,1 +1,17 @@
-<p>brand works!</p>
+<div *ngIf="dataLoaded==false" class="spinner-border text-info" role="status">
+  <span class="visually-hidden">Loading...</span>
+</div>
+<table *ngIf="dataLoaded==true" class="table">
+  <thead>
+    <tr>
+      <th>#</th>
+      <th>Marka Adı</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr *ngFor="let brand of brands">
+      <td>{{brand.id}}</td>
+      <td>{{brand.name}}</td>
+    </tr>
+  </tbody>
+</table>
